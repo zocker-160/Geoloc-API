@@ -4,7 +4,7 @@
 
 ### Start Server
 ```bash
-java -jar [-p <port>] Geoloc-API.jar <path to ip-locations.txt>
+java -jar Geoloc-API.jar [-p <port>] <path to ip-locations.txt>
 ```
 
 ### Request

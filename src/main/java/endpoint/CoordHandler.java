@@ -7,10 +7,11 @@ import model.IPDatabase;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-public class CountryHandler implements HttpHandler {
+public class CoordHandler implements HttpHandler {
+
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        System.out.println("got country request");
+        System.out.println("got coord request");
 
         var is = exchange.getRequestBody();
         var request = new String(is.readAllBytes(), StandardCharsets.UTF_8);
@@ -19,7 +20,7 @@ public class CountryHandler implements HttpHandler {
         exchange.getResponseHeaders().add("Content-Type", "text/plain");
 
         try {
-            response = IPDatabase.getInstance().getCountry(request);
+            response = IPDatabase.getInstance().getCoords(request);
             exchange.sendResponseHeaders(200, response.length());
         } catch (NoSuchFieldException | RuntimeException e) {
             response = e.getMessage();

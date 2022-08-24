@@ -38,20 +38,25 @@ public class IPDatabase {
         this.ipData = data;
     }
 
-    public String getCountry(String ip) throws NumberFormatException, NoSuchFieldException {
+    private IPEntry findEntry(String ip) throws NumberFormatException, NoSuchFieldException {
         if (ip.startsWith("127.0.0"))
             throw new NumberFormatException("you have got to be kidding me");
 
         long ipDec = IPDatabase.IPtoDecimal(ip);
-        long startTime = System.currentTimeMillis();
 
         for (var entry : ipData) {
-            if (entry.getRange().isInRange(ipDec)) {
-                System.out.println("Search time: " + (System.currentTimeMillis() - startTime) + "ms");
-                return entry.getCountry();
-            }
+            if (entry.getRange().isInRange(ipDec))
+                return entry;
         }
 
         throw new NoSuchFieldException(ip+" not found in database");
+    }
+
+    public String getCountry(String ip) throws NumberFormatException, NoSuchFieldException {
+        return findEntry(ip).getCountry();
+    }
+
+    public String getCoords(String ip) throws NumberFormatException, NoSuchFieldException {
+        return findEntry(ip).getGeolocation().toStringTuple();
     }
 }

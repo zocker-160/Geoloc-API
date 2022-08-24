@@ -1,4 +1,5 @@
 import com.sun.net.httpserver.HttpServer;
+import endpoint.CoordHandler;
 import endpoint.CountryHandler;
 import model.IPDatabase;
 import model.IPEntry;
@@ -76,6 +77,7 @@ public class Main {
             System.out.println("Webserver started on port "+port);
 
             httpServer.createContext("/country", new CountryHandler());
+            httpServer.createContext("/coords", new CoordHandler());
             httpServer.start();
 
         } catch (IOException e) {

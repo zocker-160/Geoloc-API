@@ -10,4 +10,7 @@ public class Geolocation {
         this.longitude = longitude;
     }
 
+    public String toStringTuple() {
+        return latitude+","+longitude;
+    }
 }

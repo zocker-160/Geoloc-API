@@ -1,0 +1,8 @@
+.directory
+
+.idea/
+target/
+
+ip-locations.txt
+
+*.jar

@@ -72,7 +72,10 @@ func setupEndpoints(ipEntries []*model.IPEntry) {
 		if err != nil {
 			fmt.Println(err)
 		} else {
-			fmt.Fprint(w, entry.Country)
+			str := entry.Country
+
+			fmt.Fprint(w, str)
+			fmt.Printf(" (%s) \n", str)
 		}
 	})
 
@@ -113,7 +116,7 @@ func handleRequest(
 		return nil, fmt.Errorf(" -> %s", err)
 	}
 
-	fmt.Printf(" -> found in %s \n", time.Since(startTime))
+	fmt.Printf(" -> found in %s", time.Since(startTime))
 
 	return entry, nil
 }

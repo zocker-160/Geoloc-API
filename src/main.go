@@ -70,7 +70,7 @@ func setupEndpoints(ipEntries []*model.IPEntry) {
 		entry, err := handleRequest("country", w, r, ipEntries)
 
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusNotFound)
+			fmt.Println(err)
 		} else {
 			fmt.Fprint(w, entry.Country)
 		}
@@ -80,7 +80,7 @@ func setupEndpoints(ipEntries []*model.IPEntry) {
 		entry, err := handleRequest("coords", w, r, ipEntries)
 
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusNotFound)
+			fmt.Println(err)
 		} else {
 			fmt.Fprint(w, entry.Location.ToStringTuple())
 		}

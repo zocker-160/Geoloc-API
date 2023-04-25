@@ -15,6 +15,7 @@ import (
 )
 
 const PORT = 9001
+const VERSION = "0.2"
 
 func main() {
 	if len(os.Args) < 2 {
@@ -22,7 +23,7 @@ func main() {
 		return
 	}
 
-	fmt.Println("GeoLocAPI")
+	fmt.Printf("GeoLocAPI v%s \n", VERSION)
 
 	filePath := os.Args[1]
 

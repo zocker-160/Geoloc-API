@@ -87,6 +87,7 @@ func setupEndpoints(ipEntries []*model.IPEntry) {
 			fmt.Println(err)
 		} else {
 			fmt.Fprint(w, entry.Location.ToStringTuple())
+			fmt.Println()
 		}
 	})
 }

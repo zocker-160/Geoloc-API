@@ -2,10 +2,17 @@
 
 ## Usage
 
-### Start Server
+### Run (binary)
+
+- download binary from releases or compile (see Makefile in src folder)
 ```bash
-java -jar Geoloc-API.jar [-p <port>] <path to ip-locations.txt>
+./Geoloc-API <path to ip-locations.txt>
 ```
+
+### Run (Docker)
+
+- `docker build . -t geolocapi`
+- `docker run -d -p 9001:9001 geolocapi`
 
 ### Request
 #### CURL

@@ -6,7 +6,7 @@
 
 - download binary from releases or compile (see Makefile in src folder)
 ```bash
-./Geoloc-API <path to ip-locations.txt>
+./Geoloc-API <path to ip-locations.sqlite>
 ```
 
 ### Run (Docker)
@@ -39,5 +39,5 @@ echo $result;
 ```
 
 ### Endpoints
-- `country`
-- `coords`
+- `POST /country`
+- `POST /coords`

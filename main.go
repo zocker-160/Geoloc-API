@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"io"
 	"log"
@@ -11,40 +12,13 @@ import (
 	"github.com/zocker-160/Geoloc-API/impl"
 )
 
-
-
-func setupEndpoints(ipEntries []*impl.IPEntry) {
-
-	http.HandleFunc("/country", func(w http.ResponseWriter, r *http.Request) {
-		entry, err := handleRequest("country", w, r, ipEntries)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-
-		str := entry.Country
-
-		fmt.Fprint(w, str)
-		fmt.Printf(" (%s) \n", str)
-	})
-
-	http.HandleFunc("/coords", func(w http.ResponseWriter, r *http.Request) {
-		entry, err := handleRequest("coords", w, r, ipEntries)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-
-		fmt.Fprint(w, entry.Location.ToStringTuple())
-		fmt.Println()
-	})
-}
+const PORT = 9001
+const VERSION = "0.3"
 
 func handleRequest(
-		rType string, 
-		w http.ResponseWriter, r *http.Request, 
-		ipEntries []*impl.IPEntry) (*impl.IPEntry, error) {
-	
+		rType string, db *sql.DB,
+		w http.ResponseWriter, r *http.Request) (*impl.DBRow, error) {
+
 	fmt.Printf(
 		"[%s] got %s request", 
 		time.Now().Format("2006.01.02 15:04:05 MST"), rType,
@@ -59,7 +33,7 @@ func handleRequest(
 
 	startTime := time.Now()
 
-	entry, err := impl.FindEntry(string(body), ipEntries)
+	row, err := impl.FindEntryDB(string(body), db)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotFound)
 
@@ -68,17 +42,44 @@ func handleRequest(
 
 	fmt.Printf(" -> found in %s", time.Since(startTime))
 
-	return entry, nil
+	return row, nil
 }
 
 
-const PORT = 9001
-const VERSION = "0.2"
+func handleCountryRequest(db *sql.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		data, err := handleRequest("country", db, w, r)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		res := data.Country
+
+		fmt.Fprint(w, res)
+		fmt.Printf(" (%s) \n", res)
+	}
+}
+
+func handleCoordsRequest(db *sql.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		data, err := handleRequest("coords", db, w, r)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		res := fmt.Sprintf("%f,%f", data.Latitude, data.Longitude)
+
+		fmt.Fprint(w, res)
+		fmt.Printf(" (%s) \n", res)
+	}
+}
 
 
-func getIPFile() string {
+func getDatabase() string {
 	if len(os.Args) < 2 {
-		log.Fatalln("Please specify path to ip-locations.txt")
+		log.Fatalln("Please specify path to ip-locations.sqlite")
 	}
 
 	return os.Args[1]
@@ -87,10 +88,28 @@ func getIPFile() string {
 func main() {
 	fmt.Printf("GeoLocAPI v%s \n", VERSION)
 
-	filePath := getIPFile()
-	ipEntries := impl.ParseIPs(filePath)
+	filePath := getDatabase()
+	db, err := sql.Open("sqlite", filePath)
+	if err != nil {
+		panic(err)
+	}
 
-	setupEndpoints(ipEntries)
+	defer db.Close()
+
+	/* just for testing
+	entry, err := impl.FindEntryDB("223.255.227.0", db)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(entry)
+	fmt.Println(entry.Country)
+
+	return
+	*/
+
+	http.HandleFunc("/country", handleCountryRequest(db))
+	http.HandleFunc("/coords", handleCoordsRequest(db))
 
 	fmt.Printf("Listening on port %d \n", PORT)
 	http.ListenAndServe(fmt.Sprintf(":%d", PORT), nil)

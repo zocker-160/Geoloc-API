@@ -41,3 +41,17 @@ echo $result;
 ### Endpoints
 - `POST /country`
 - `POST /coords`
+- `POST /all/json` example respone:
+```json
+{
+  "Ipfrom": 3758088960,
+  "Ipto": 3758089215,
+  "Countrycode": "ID",
+  "Country": "Indonesia",
+  "State": "Sumatera Barat",
+  "City": "Payakumbuh",
+  "Latitude": -0.22019,
+  "Longitude": 100.63078,
+  "Id": 2989074
+}
+```

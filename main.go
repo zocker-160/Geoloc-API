@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
@@ -72,7 +73,28 @@ func handleCoordsRequest(db *sql.DB) http.HandlerFunc {
 		res := fmt.Sprintf("%f,%f", data.Latitude, data.Longitude)
 
 		fmt.Fprint(w, res)
-		fmt.Printf(" (%s) \n", res)
+		fmt.Printf(" (%s - %s) \n", res, data.Country)
+	}
+}
+
+func handleAllJsonRequest(db *sql.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		data, err := handleRequest("all", db, w, r)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		jsonencoder := json.NewEncoder(w)
+		if err := jsonencoder.Encode(data); err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		//w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Content-Type", "application/json,charset=utf-8")
+
+		fmt.Printf(" (all json - %s) \n", data.Country)
 	}
 }
 
@@ -110,6 +132,7 @@ func main() {
 
 	http.HandleFunc("/country", handleCountryRequest(db))
 	http.HandleFunc("/coords", handleCoordsRequest(db))
+	http.HandleFunc("/all/json", handleAllJsonRequest(db))
 
 	fmt.Printf("Listening on port %d \n", PORT)
 	http.ListenAndServe(fmt.Sprintf(":%d", PORT), nil)

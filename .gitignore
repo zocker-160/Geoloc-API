@@ -4,6 +4,6 @@
 target/
 pkg/
 
-ip-locations.txt
+ip-locations*
 
 *.jar

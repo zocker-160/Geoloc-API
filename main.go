@@ -73,7 +73,7 @@ func handleCoordsRequest(db *sql.DB) http.HandlerFunc {
 		res := fmt.Sprintf("%f,%f", data.Latitude, data.Longitude)
 
 		fmt.Fprint(w, res)
-		fmt.Printf(" (%s - %s) \n", res, data.Country)
+		fmt.Printf(" (%s) \n", data.Country)
 	}
 }
 

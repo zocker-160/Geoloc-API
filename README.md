@@ -6,13 +6,18 @@
 
 - download binary from releases or compile (see Makefile in src folder)
 ```bash
-./Geoloc-API <path to ip-locations.sqlite>
+./Geoloc-API "path/to/ip-locations.txt"
 ```
 
 ### Run (Docker)
 
 - `docker build . -t geolocapi`
 - `docker run -d -p 9001:9001 geolocapi`
+
+### ENV Variables
+
+- `GEOAPI_RAM_OPT`: enables low memory mode if set to `"1"`
+- `GEOAPI_PORT`: port HTTP server will listen to
 
 ### Request
 #### CURL
@@ -44,14 +49,14 @@ echo $result;
 - `POST /all/json` example respone:
 ```json
 {
-  "Ipfrom": 3758088960,
-  "Ipto": 3758089215,
-  "Countrycode": "ID",
+  "Range": {
+    "StartIP": 3758088960,
+    "EndIP": 3758089215
+  },
   "Country": "Indonesia",
-  "State": "Sumatera Barat",
-  "City": "Payakumbuh",
-  "Latitude": -0.22019,
-  "Longitude": 100.63078,
-  "Id": 2989074
+  "Location": {
+    "Latitude": -0.22019,
+    "Longitude": 100.63078
+  }
 }
 ```
